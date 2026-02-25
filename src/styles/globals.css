@@ -2,8 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root{
+  --brand: #0ea5e9;
+  --bg: #dbeeff;
+  --muted: #64748b;
+}
+
 html, body, #__next {
   height: 100%;
+}
+
+/* Use Poppins across the app */
+body {
+  font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: var(--bg);
+  color: #0f172a;
+}
+
+/* Brand button */
+.btn-brand{
+  background: var(--brand);
+  color: white;
+}
+
+header a, header a:visited{
+  color: var(--brand);
 }
 
 /* Basic container */

@@ -4,11 +4,13 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>HotelAggregator NG — Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#f8fafc}
+    :root{--brand:#0ea5e9;--bg:#dbeeff}
+    body{font-family:'Poppins',Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:var(--bg)}
     .container{max-width:980px;margin:24px auto;padding:16px}
     header{background:#fff;padding:12px 16px;border-radius:8px;display:flex;justify-content:space-between;align-items:center}
-    a.button{background:#0ea5e9;color:#fff;padding:8px 12px;border-radius:6px;text-decoration:none}
+    a.button{background:var(--brand);color:#fff;padding:8px 12px;border-radius:6px;text-decoration:none}
     .card{background:#fff;padding:14px;border-radius:8px;margin-top:12px}
     .grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
     .list-item{border:1px solid #eee;padding:10px;border-radius:6px;margin-bottom:10px}
@@ -36,7 +38,7 @@
 
     <section id="search" class="card">
       <h3>Search hotels</h3>
-      <div style="display:flex;gap:12px;margin-top:12px">
+      <div style="display:flex;gap:12px;margin-top:12px;align-items:end">
         <div style="flex:1">
           <label>City</label>
           <input id="city" placeholder="Lagos, Abuja..." />
@@ -44,6 +46,17 @@
         <div style="width:200px">
           <label>Price range (₦)</label>
           <input id="price" placeholder="10000-40000" />
+        </div>
+        <div style="width:120px">
+          <button id="searchBtn" class="button" style="width:100%">Search</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <label>Dates</label>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <input id="ci" type="date" style="flex:1;padding:8px;border-radius:6px;border:1px solid #e2e8f0" />
+          <input id="co" type="date" style="flex:1;padding:8px;border-radius:6px;border:1px solid #e2e8f0" />
         </div>
       </div>
 

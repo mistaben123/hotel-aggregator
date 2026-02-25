@@ -50,6 +50,21 @@ Next steps (suggested)
 - Admin dashboard pages and secure API endpoints
 - Add tests and CI configuration
 
+Hotel onboarding / real hotels dataset
+
+- Public submissions: added `/hotel/submit` page and API `POST /api/hotels/submit` for hotel owners to add their hotels.
+- Admin review: added `GET/POST /api/admin/submissions` for admins to list and approve/reject submissions. Approving creates `City` and `Hotel` records.
+- Bulk import: to populate the database with real hotels, you can import CSV/GeoJSON from public sources (OpenStreetMap, Google Places exports, or paid datasets). Use a script similar to `prisma/import_hotels.ts` (not included) to parse and insert records into `City` and `Hotel` models.
+
+Suggested import approach
+
+1. Obtain a dataset (CSV/GeoJSON) that includes hotel name, address, city, state, lat, lon, phone, website.
+2. Normalize city names and upsert `City` rows first.
+3. Insert `Hotel` rows and related `Room` / `Amenity` records.
+4. Run data deduplication to avoid duplicates (match by normalized name + city + address).
+
+If you want, I can add a `prisma/import_hotels.ts` helper that reads a CSV and bulk-inserts hotels into the database (I will need an example CSV format or sample rows). Shall I add that importer next?
+
 Paystack webhook
 
 - Endpoint: `POST /api/paystack/webhook`

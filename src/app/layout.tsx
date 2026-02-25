@@ -13,10 +13,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="min-h-screen flex flex-col">
           <header className="bg-white shadow">
             <div className="container py-4 flex items-center justify-between">
-              <h1 className="text-lg font-semibold">HotelAggregator NG</h1>
+              <h1 className="text-lg font-semibold"><a href="/" style={{color:'var(--brand)'}}>HotelAggregator NG</a></h1>
               <nav>
-                <a className="mr-4 text-sm text-gray-700" href="/search">Search</a>
-                <a className="text-sm text-gray-700" href="/account">Account</a>
+                <a className="mr-4 text-sm" href="/search" style={{color:'var(--brand)'}}>Search</a>
+                <a className="text-sm" href="/account" style={{color:'var(--brand)'}}>Account</a>
               </nav>
             </div>
           </header>

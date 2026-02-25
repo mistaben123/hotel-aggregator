@@ -91,6 +91,35 @@ model Hotel {
   createdAt        DateTime          @default(now())
 }
 
+model HotelSubmission {
+  id               String    @id @default(cuid())
+  name             String
+  description      String?
+  address          String
+  cityName         String
+  state            String
+  latitude         Float?
+  longitude        Float?
+  phone            String?
+  whatsapp         String?
+  contactEmail     String?
+  website          String?
+  photos           String[]  @default([])
+  amenities        String[]  @default([])
+  powerAvailability PowerAvailability?
+  securityRating   Int?
+  ownerName        String?
+  ownerPhone       String?
+  status           SubmissionStatus @default(PENDING)
+  createdAt        DateTime  @default(now())
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model Amenity {
   id     String  @id @default(cuid())
   name   String  @unique
