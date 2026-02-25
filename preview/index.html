@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HotelAggregator NG — Preview</title>
+  <style>
+    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#f8fafc}
+    .container{max-width:980px;margin:24px auto;padding:16px}
+    header{background:#fff;padding:12px 16px;border-radius:8px;display:flex;justify-content:space-between;align-items:center}
+    a.button{background:#0ea5e9;color:#fff;padding:8px 12px;border-radius:6px;text-decoration:none}
+    .card{background:#fff;padding:14px;border-radius:8px;margin-top:12px}
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
+    .list-item{border:1px solid #eee;padding:10px;border-radius:6px;margin-bottom:10px}
+    label{font-size:13px;color:#334155}
+    input,select{width:100%;padding:8px;border-radius:6px;border:1px solid #e2e8f0;margin-top:6px}
+    .muted{color:#64748b;font-size:14px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div><strong>HotelAggregator NG</strong></div>
+      <nav>
+        <a href="#home" style="margin-right:10px">Home</a>
+        <a href="#search" style="margin-right:10px">Search</a>
+        <a href="#account">Account</a>
+      </nav>
+    </header>
+
+    <section id="home" class="card">
+      <h2>Find hotels across Nigeria</h2>
+      <p class="muted">Search Lagos, Abuja, Port Harcourt, Enugu, Owerri, Asaba and more.</p>
+      <p style="margin-top:10px"><a class="button" href="#search">Try search</a></p>
+    </section>
+
+    <section id="search" class="card">
+      <h3>Search hotels</h3>
+      <div style="display:flex;gap:12px;margin-top:12px">
+        <div style="flex:1">
+          <label>City</label>
+          <input id="city" placeholder="Lagos, Abuja..." />
+        </div>
+        <div style="width:200px">
+          <label>Price range (₦)</label>
+          <input id="price" placeholder="10000-40000" />
+        </div>
+      </div>
+
+      <div id="results" style="margin-top:16px">
+        <!-- sample results injected by JS -->
+      </div>
+    </section>
+
+    <section id="detail" class="card" style="display:none">
+      <button id="back" style="margin-bottom:8px">← Back to search</button>
+      <div style="display:flex;gap:16px">
+        <div style="flex:1">
+          <h3 id="hotel-name">Lekki Bay Hotel</h3>
+          <p id="hotel-address" class="muted">Lekki Phase 1, Lagos</p>
+          <h4 style="margin-top:14px">About</h4>
+          <p id="hotel-desc" class="muted">Comfortable stay with proximity to malls and beach.</p>
+          <h4 style="margin-top:12px">Rooms</h4>
+          <ul id="hotel-rooms"></ul>
+        </div>
+        <aside style="width:320px">
+          <div style="background:#f1f5f9;padding:12px;border-radius:8px">
+            <h4>Book a room</h4>
+            <label>Check-in</label>
+            <input id="ci" type="date" />
+            <label>Check-out</label>
+            <input id="co" type="date" />
+            <label>Room</label>
+            <select id="room-select"></select>
+            <label style="margin-top:8px">Email</label>
+            <input id="email" placeholder="you@example.com" />
+            <button id="book" class="button" style="margin-top:10px">Proceed to Paystack (simulated)</button>
+            <div id="booking-result" class="muted" style="margin-top:8px"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="account" class="card" style="display:none">
+      <h3>Account — Bookings</h3>
+      <div id="bookings-list" style="margin-top:12px"></div>
+    </section>
+
+  </div>
+
+  <script>
+    const sampleHotels = [
+      { id:'h1', name:'Lekki Bay Hotel', address:'Lekki Phase 1', city:'Lagos', desc:'Comfortable stay in Lekki with proximity to malls and beach.', rooms:[{id:'r1',name:'Standard',price:20000},{id:'r2',name:'Deluxe',price:40000}] },
+      { id:'h2', name:'Garki Central Hotel', address:'Garki, Abuja', city:'Abuja', desc:'Business-friendly hotel near Abuja city center and airports.', rooms:[{id:'r3',name:'Standard',price:18000},{id:'r4',name:'Executive',price:45000}] }
+    ]
+
+    const resultsEl = document.getElementById('results')
+    function renderResults(list){
+      resultsEl.innerHTML = ''
+      list.forEach(h=>{
+        const el = document.createElement('div')
+        el.className = 'list-item'
+        el.innerHTML = `<strong>${h.name}</strong><div class="muted">${h.address} — ${h.city}</div><div style="margin-top:8px"><a href='#' data-id='${h.id}' class='view'>View details</a></div>`
+        resultsEl.appendChild(el)
+      })
+      document.querySelectorAll('.view').forEach(a=>a.addEventListener('click',e=>{
+        e.preventDefault(); const id = a.dataset.id; showDetail(id)
+      }))
+    }
+
+    function showDetail(id){
+      const h = sampleHotels.find(x=>x.id===id)
+      if(!h) return
+      document.getElementById('search').style.display='none'
+      document.getElementById('detail').style.display='block'
+      document.getElementById('hotel-name').innerText = h.name
+      document.getElementById('hotel-address').innerText = h.address + ' — ' + h.city
+      document.getElementById('hotel-desc').innerText = h.desc
+      const roomsUl = document.getElementById('hotel-rooms'); roomsUl.innerHTML=''
+      const roomSelect = document.getElementById('room-select'); roomSelect.innerHTML=''
+      h.rooms.forEach(r=>{ const li=document.createElement('li'); li.innerText = `${r.name} — ₦${r.price.toLocaleString()} / night`; roomsUl.appendChild(li); const opt=document.createElement('option'); opt.value=r.id; opt.innerText=`${r.name} — ₦${r.price.toLocaleString()} / night`; roomSelect.appendChild(opt) })
+      // attach booking handler
+      document.getElementById('book').onclick = ()=>simulateBooking(h)
+      document.getElementById('back').onclick = ()=>{ document.getElementById('search').style.display='block'; document.getElementById('detail').style.display='none' }
+    }
+
+    function simulateBooking(hotel){
+      const ci = document.getElementById('ci').value
+      const co = document.getElementById('co').value
+      const roomId = document.getElementById('room-select').value
+      const email = document.getElementById('email').value
+      if(!ci||!co||!roomId||!email){ alert('Fill all fields'); return }
+      const r = hotel.rooms.find(x=>x.id===roomId)
+      const nights = Math.max(1, (new Date(co)-new Date(ci))/(1000*60*60*24))
+      const amount = (r.price * nights)
+      document.getElementById('booking-result').innerText = `Created booking for ${nights} night(s). Amount: ₦${amount.toLocaleString()}. Redirecting to Paystack... (simulated)`
+      setTimeout(()=>{ alert('Simulated payment success — webhook would confirm and booking becomes CONFIRMED') }, 800)
+    }
+
+    document.getElementById('city').addEventListener('input', ()=>{ const q=document.getElementById('city').value.toLowerCase(); const filtered = sampleHotels.filter(h=>h.city.toLowerCase().includes(q)||h.name.toLowerCase().includes(q)); renderResults(filtered.length?filtered:sampleHotels) })
+    // default render
+    renderResults(sampleHotels)
+
+    // Account view sample (simulate two bookings)
+    const sampleBookings = [{id:'b1',hotel:'Lekki Bay Hotel',room:'Deluxe',checkIn:'2026-03-01',checkOut:'2026-03-03',amount:80000,status:'CONFIRMED'},{id:'b2',hotel:'Garki Central Hotel',room:'Standard',checkIn:'2026-04-05',checkOut:'2026-04-06',amount:18000,status:'PENDING'}]
+    function renderBookings(){
+      const el = document.getElementById('bookings-list'); el.innerHTML=''
+      sampleBookings.forEach(b=>{ const d=document.createElement('div'); d.className='list-item'; d.innerHTML=`<div style="display:flex;justify-content:space-between"><div><strong>${b.hotel}</strong><div class='muted'>${b.room} — ${b.checkIn} to ${b.checkOut}</div></div><div class='muted'>₦${b.amount.toLocaleString()}</div></div><div style='margin-top:8px'>Status: ${b.status}</div>`; el.appendChild(d) })
+    }
+    renderBookings()
+
+    // hash routing for opening account
+    function onHash(){ const h=location.hash.replace('#',''); document.getElementById('home').style.display=h==='home' || h===''; document.getElementById('search').style.display=h==='search'||h===''; document.getElementById('account').style.display=h==='account'; if(h==='account'){ document.getElementById('detail').style.display='none' } }
+    window.addEventListener('hashchange', onHash)
+    onHash()
+  </script>
+</body>
+</html>

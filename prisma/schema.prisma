@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PowerAvailability {
+  TWENTY_FOUR_SEVEN
+  GENERATOR
+  INVERTER
+  INTERMITTENT
+}
+
+model User {
+  id         String    @id @default(cuid())
+  name       String?
+  email      String    @unique
+  image      String?
+  favorites  Hotel[]   @relation("Favorites")
+  bookings   Booking[]
+  role       Role      @default(USER)
+  createdAt  DateTime  @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model City {
+  id        String  @id @default(cuid())
+  name      String  @unique
+  state     String
+  hotels    Hotel[]
+}
+
+model Hotel {
+  id               String            @id @default(cuid())
+  name             String
+  description      String?
+  address          String
+  city             City              @relation(fields: [cityId], references: [id])
+  cityId           String
+  latitude         Float?
+  longitude        Float?
+  powerAvailability PowerAvailability
+  securityRating   Int               @default(3)
+  amenities        Amenity[]         @relation("HotelAmenities")
+  rooms            Room[]
+  reviews          Review[]
+  phone            String?
+  whatsapp         String?
+  photos           String[]          @default([])
+  createdAt        DateTime          @default(now())
+}
+
+model Amenity {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  hotels Hotel[] @relation("HotelAmenities")
+}
+
+model Room {
+  id         String   @id @default(cuid())
+  hotel      Hotel    @relation(fields: [hotelId], references: [id])
+  hotelId    String
+  name       String
+  type       String
+  price      Int
+  quantity   Int
+  createdAt  DateTime @default(now())
+}
+
+model Booking {
+  id            String   @id @default(cuid())
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String
+  hotel         Hotel    @relation(fields: [hotelId], references: [id])
+  hotelId       String
+  room          Room     @relation(fields: [roomId], references: [id])
+  roomId        String
+  checkIn       DateTime
+  checkOut      DateTime
+  totalAmount   Int
+  currency      String   @default("NGN")
+  status        String   @default("PENDING")
+  paystackRef   String?
+  createdAt     DateTime @default(now())
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  hotel     Hotel    @relation(fields: [hotelId], references: [id])
+  hotelId   String
+  rating    Int
+  title     String?
+  body      String?
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Payment {
+  id         String   @id @default(cuid())
+  booking    Booking? @relation(fields: [bookingId], references: [id])
+  bookingId  String?
+  reference  String   @unique
+  amount     Int
+  currency   String   @default("NGN")
+  status     String
+  gateway    String
+  raw        Json?
+  createdAt  DateTime @default(now())
+}
